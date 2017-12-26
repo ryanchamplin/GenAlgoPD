@@ -3,33 +3,36 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import PrisonerDilemma.DNA;
+
 
 public class Population{
 	
 	DNA[] population;
 	double muatationRate;
 	ArrayList<DNA> matingPool;
-	String targetPhrase;
-	int generations;
-	boolean isDone;
+	int generations = 0;
+	boolean isDone = false;
 	final int PERFECTSCORE = 1;
 	Random rand = new Random();
 	String mySelection = "";
 	
-	Population(String target, double muationRate, int popSize, String selectionType){
-		this.targetPhrase = target;
+	Population(double muationRate, int popSize, String selectionType){
 		this.muatationRate = muationRate;
 		this.population = new DNA[popSize];
 		
 		for(int i = 0; i<population.length; i++){
-			population[i] = new DNA(target.length()); 
+			population[i] = new DNA(70); 
 		}
 		calculateFitness();
 		matingPool = new ArrayList<DNA>();
-		isDone = false;
-		generations = 0;
+		if(generations == 50){
+			isDone = true;
+		}
 		this.mySelection = selectionType;
-		//perfectScore = 1;
+	}
+	public void getGenerations(){
+		System.out.println("Generation: " + generations + ". isDone = " + isDone);
 	}
 	public void printMatingPool(){
 		for(int i = 0; i<matingPool.size(); i++){
@@ -38,7 +41,7 @@ public class Population{
 	}
 	public void calculateFitness(){
 		for (int i = 0; i<population.length; i++){
-			population[i].eveulateDNAFitness(targetPhrase);
+			population[i].eveulateDNAFitness();
 		}
 	}
 	
@@ -111,7 +114,6 @@ public class Population{
 	 * Instead of a single selection pointer employed in roulette wheel, SUS uses N equally spaced pointers. 
 	 */
 	private void stochastic(DNA[] inPopulation) {
-		// TODO Auto-generated method stub
 		double maxFit = findMaxFitness(inPopulation);
 		int numToKeep = (int) (inPopulation.length *.2);
 		double distance = (maxFit / numToKeep);
@@ -202,9 +204,6 @@ public class Population{
 				bestPopIndex = i;				
 			}
 		}
-		if(currentBest == PERFECTSCORE){
-			isDone = true;
-		}
 		return population[bestPopIndex].returnSentence();
 	}
 	
@@ -226,20 +225,13 @@ public class Population{
 		return totalFit/ population.length;
 	}
 	
-	private double getTotalFitness(){
-		double totalFit = 0;
-		for (int i = 0; i<population.length; i++){
-			totalFit += population[i].getFitness();
-		}
-		return totalFit;
-	}
 	
 	public String printSentences(){
-		String everything = "";
+		String populationString = "";
 		
 		for (int i = 0; i < population.length; i++){
-			everything += population[i].returnSentence() + "\n";
+			populationString += population[i].returnSentence() + "\n";
 		}	
-		return everything;
+		return populationString;
 	}
 }

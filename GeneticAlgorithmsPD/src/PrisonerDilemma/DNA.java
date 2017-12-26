@@ -7,35 +7,57 @@ import java.util.Random;
 public class DNA implements Comparable<DNA> { // may need impliment Comparable<DNA>
 	
 	Random rand = new Random();
+	final String ALPHABET = "RTSP";
+	private int fitness;
+	char[] population;
 	
-	enum Choice {DEFECT, SILENT;	
-		public static Choice getRandomChoice(){
-			Random rand = new Random();
-			return values()[rand.nextInt(values().length)];
-		};
-	}
-	private double fitness;
-	Choice[] population;
-	
-	DNA(){
-		population = new Choice[1];
+	DNA(int popSize){
+		population = new char[popSize];
 		for(int i = 0; i < population.length; i++){		
-			population[i] = Choice.getRandomChoice();
+			population[i] = (char) ALPHABET.charAt(rand.nextInt(ALPHABET.length()));
 		}
 	}
 	
 	public String returnSentence(){
-		return new String(population.toString());
+		return new String(population);
 	}
 	
 	public void eveulateDNAFitness(){
-		int score = 0;
-		if()
-		fitness = score ;
+		//TODO	
+		int myScore = 0;
+		int yourScore = 0;
+		for(int i=0; i < population.length; i++){
+			char inChoice = population[i];
+			
+			switch(inChoice){
+			case 'R':
+				myScore += 6;
+				yourScore +=6;
+				break;
+			case 'T':
+				myScore +=10;
+				yourScore +=0;
+				break;
+			case 'S':
+				myScore += 0;
+				yourScore +=10;
+				break;
+			case 'P':
+				myScore += 2;
+				yourScore += 2;
+				break;
+			default:
+				myScore += 0;
+				yourScore +=0;
+				break;
+			}
+		}
+		
+		fitness = myScore + yourScore;
 	}
 	
 	public DNA crossover(DNA secondParent){
-		DNA child = new DNA();
+		DNA child = new DNA(population.length);
 		
 		int splitPoint = rand.nextInt(population.length);
 		
@@ -53,7 +75,7 @@ public class DNA implements Comparable<DNA> { // may need impliment Comparable<D
 	public void mutate(double mutationRate){
 		for (int i = 0; i<population.length; i++){
 			if(rand.nextDouble() < mutationRate){
-				population[i] =  Choice.getRandomChoice();
+				population[i] = (char) ALPHABET.charAt(rand.nextInt(ALPHABET.length()));
 			}
 		}
 	}
